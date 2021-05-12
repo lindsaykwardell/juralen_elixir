@@ -13,10 +13,21 @@ defmodule JuralenWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :graphql do
+    plug JuralenWeb.Context
+  end
+
   scope "/", JuralenWeb do
     pipe_through :browser
 
     get "/", PageController, :index
+  end
+
+  scope "/api" do
+    pipe_through :graphql
+
+    forward "/", Absinthe.Plug,
+      schema: JuralenWeb.Schema
   end
 
   # Other scopes may use custom stacks.
