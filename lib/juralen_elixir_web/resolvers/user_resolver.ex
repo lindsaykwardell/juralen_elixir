@@ -33,11 +33,6 @@ defmodule JuralenWeb.UserResolver do
           _ -> {:ok, Juralen.Token.generate_and_sign!(%{"user_id" => user.id})}
         end
     end
-
-    # case Accounts.get_user!(args[:user_id]) do
-    #   nil -> {:error, "invalid user"}
-    #   _validUser -> {:ok, Juralen.Token.generate_and_sign!(args)}
-    # end
   end
 
   def profile(_root, _args, %{context: %{current_user: current_user}}) do
