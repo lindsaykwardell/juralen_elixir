@@ -1,5 +1,4 @@
-import { Elm } from "./Main.elm";
+import { Elm } from "../src/Main.elm";
 
 const node = document.querySelector("#elm");
-console.log(Elm, node);
 const app = Elm.Main.init({ node });
