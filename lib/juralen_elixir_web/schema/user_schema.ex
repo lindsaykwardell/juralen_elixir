@@ -6,7 +6,6 @@ defmodule JuralenWeb.Schema.UserSchema do
     field :id, :id
     field :name, :string
     field :email, :string
-    field :password_hash, :string
   end
 
   object :user_queries do
