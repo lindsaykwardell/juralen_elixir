@@ -1,3 +1,8 @@
-<div id="elm"></div>
-
-<div id="greeting"></div>
+<section class="w-10/12 m-auto">
+  <h2 class="text-5xl text-center pb-4">Welcome to Juralen!</h2>
+  <article class="flex flex-col w-2/3 m-auto bg-gray-800 shadow p-4">
+    <p class="my-3 text-lg">Juralen is a turn-based strategy game where you take the role of a ruler of a small kingdom. It is up to you to expand your reach, and build your civilization to dominate the Juralen Valley!</p>
+    <p>Juralen can be played with up to 8 players, both single and multiplayer.</p>
+  </article>
+  <button class="bg-yellow-500 text-2xl px-6 py-2 hover:bg-yellow-600 shadow hover:shadow-lg rounded m-auto mt-4 block transition duration-50">Sign Up Now!</button>
+</section>

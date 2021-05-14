@@ -1,10 +1,5 @@
 import React, { Suspense } from "react";
-import { useQuery } from "../src/gqless";
-
-// @ts-ignore
-// import Elm from 'react-elm-components'
-// @ts-ignore
-import Main from '../src/Main.elm'
+import { useQuery } from "./gqless";
 
 interface GreeterProps {
   name: string;
@@ -38,7 +33,6 @@ const Greeter: React.FC<GreeterProps> = (props: GreeterProps) => {
       <Suspense fallback="Loading...">
         <UserList />
       </Suspense>
-      {/* <Elm src={Main.Elm.Main} /> */}
     </section>
   );
 };

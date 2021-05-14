@@ -14,10 +14,10 @@ import "../css/app.postcss";
 //
 import "phoenix_html";
 
-import React from "react";
-import ReactDOM from "react-dom";
+// import React from "react";
+// import ReactDOM from "react-dom";
 
-import Greeter from "./greeter";
+// import Greeter from "./greeter";
 
-const greeting = document.getElementById("greeting");
-ReactDOM.render(<Greeter name="Phoenix" />, greeting);
+// const greeting = document.getElementById("greeting");
+// ReactDOM.render(<Greeter name="Phoenix" />, greeting);
