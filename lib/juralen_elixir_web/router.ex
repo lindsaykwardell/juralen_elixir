@@ -21,6 +21,7 @@ defmodule JuralenWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/login", UserController, :login
   end
 
   scope "/api" do

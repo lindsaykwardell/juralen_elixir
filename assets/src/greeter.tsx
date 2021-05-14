@@ -23,16 +23,20 @@ const Greeter: React.FC<GreeterProps> = (props: GreeterProps) => {
   const name = props.name;
 
   return (
-    <section className="phx-hero">
-      <h1>Welcome to {name} with Typescript and React!</h1>
-      <p>
-        A productive web framework that
-        <br />
-        does not compromise speed or maintainability.
-      </p>
-      <Suspense fallback="Loading...">
+    <section className="w-96 m-auto bg-gray-900 p-4 shadow">
+      <form className="flex flex-col text-lg">
+        <label className="flex justify-between items-center mb-3">
+          Email Address
+          <input type="email" className="w-52 p-1 text-black" />
+        </label>
+        <label className="flex justify-between items-center">
+          Password
+          <input type="password" className="w-52 p-1 text-black" />
+        </label>
+      </form>
+      {/* <Suspense fallback="Loading...">
         <UserList />
-      </Suspense>
+      </Suspense> */}
     </section>
   );
 };
