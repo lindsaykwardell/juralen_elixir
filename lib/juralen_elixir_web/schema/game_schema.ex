@@ -5,6 +5,17 @@ defmodule JuralenWeb.Schema.GameSchema do
   object :game do
     field :uuid, :string
     field :grid, list_of(:cell)
+    field :settings, :settings
+  end
+
+  object :settings do
+    field :max_x, non_null(:integer)
+    field :max_y, non_null(:integer)
+  end
+
+  input_object :input_settings do
+    field :max_x, non_null(:integer)
+    field :max_y, non_null(:integer)
   end
 
   object :cell do
@@ -21,19 +32,31 @@ defmodule JuralenWeb.Schema.GameSchema do
   object :game_queries do
     @desc "Get game"
     field :get_game, :game do
-      arg :uuid, non_null(:string)
+      arg(:uuid, non_null(:string))
 
-      resolve &GameResolver.get_game/3
+      resolve(&GameResolver.get_game/3)
     end
   end
 
   object :game_mutations do
     @desc "Create new game"
     field :create_game, :game do
-      arg :x, :integer
-      arg :y, :integer
+      resolve(&GameResolver.create_game/3)
+    end
 
-      resolve &GameResolver.create_game/3
+    @desc "Update settings for a game"
+    field :update_game_settings, :game do
+      arg(:uuid, non_null(:string))
+      arg(:settings, non_null(:input_settings))
+
+      resolve(&GameResolver.update_settings/3)
+    end
+
+    @desc "Start the game"
+    field :start_game, :game do
+      arg(:uuid, non_null(:string))
+
+      resolve(&GameResolver.start_game/3)
     end
   end
 end

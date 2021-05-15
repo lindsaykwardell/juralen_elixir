@@ -1,6 +1,9 @@
 defmodule Juralen.Game.Init do
-  def generate(max_x, max_y) do
-    roll_next_cell(%{x: 0, y: 0}, max_x, max_y, [])
+  def generate_grid(game) do
+    %{
+      game
+      | grid: roll_next_cell(%{x: 0, y: 0}, game[:settings][:max_x], game[:settings][:max_y], [])
+    }
   end
 
   def roll_next_cell(loc, max_x, max_y, cells) do

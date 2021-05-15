@@ -1,5 +1,5 @@
 defmodule Juralen.Game.Cell do
-  defp default do
+  defp empty do
     %{
       cell_type: "Plains",
       controlled_by: nil,
@@ -16,7 +16,7 @@ defmodule Juralen.Game.Cell do
     cond do
       roll <= 12 ->
         %{
-          default()
+          empty()
           | cell_type: "Plains",
             def_bonus: 3,
             structure: "Town",
@@ -26,7 +26,7 @@ defmodule Juralen.Game.Cell do
 
       roll > 12 && roll <= 20 ->
         %{
-          default()
+          empty()
           | cell_type: "Mountain",
             x: loc[:x],
             y: loc[:y]
@@ -34,7 +34,7 @@ defmodule Juralen.Game.Cell do
 
       roll > 20 && roll <= 40 ->
         %{
-          default()
+          empty()
           | cell_type: "Forest",
             def_bonus: 1,
             x: loc[:x],
@@ -42,7 +42,7 @@ defmodule Juralen.Game.Cell do
         }
 
       roll > 40 ->
-        %{default() | x: loc[:x], y: loc[:y]}
+        %{empty() | x: loc[:x], y: loc[:y]}
     end
   end
 end

@@ -1,10 +1,16 @@
 defmodule JuralenWeb.GameResolver do
   alias Juralen.Game
 
-  def create_game(_root, args, _info) do
-    max_x = args[:x] || 8
-    max_y = args[:y] || 8
-    Game.create_game(max_x, max_y)
+  def create_game(_root, _args, _info) do
+    Game.create_game()
+  end
+
+  def update_settings(_root, args, _info) do
+    Game.update_settings(args[:uuid], args[:settings])
+  end
+
+  def start_game(_root, args, _info) do
+    Game.start_game(args[:uuid])
   end
 
   def get_game(_root, args, _info) do
