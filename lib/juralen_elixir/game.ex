@@ -1,8 +1,23 @@
 defmodule Juralen.Game do
   alias Juralen.Game.Init
+  alias Juralen.Game.Player
+  alias Juralen.Accounts
 
   def create_game() do
-    save_game(%{uuid: UUID.uuid4(), grid: [], settings: %{max_x: 8, max_y: 8}})
+    Init.generate_game()
+    |> save_game()
+  end
+
+  def add_player(uuid, id) do
+    get_game!(uuid)
+    |> Player.add_player(Accounts.get_user!(id))
+    |> save_game()
+  end
+
+  def remove_player(uuid, id) do
+    get_game!(uuid)
+    |> Player.remove_player(id)
+    |> save_game()
   end
 
   def update_settings(uuid, settings) do

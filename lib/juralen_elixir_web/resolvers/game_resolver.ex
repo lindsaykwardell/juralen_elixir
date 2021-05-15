@@ -5,6 +5,14 @@ defmodule JuralenWeb.GameResolver do
     Game.create_game()
   end
 
+  def add_player(_root, args, _info) do
+    Game.add_player(args[:uuid], args[:user_id])
+  end
+
+  def remove_player(_root, args, _info) do
+    Game.remove_player(args[:uuid], args[:user_id])
+  end
+
   def update_settings(_root, args, _info) do
     Game.update_settings(args[:uuid], args[:settings])
   end
