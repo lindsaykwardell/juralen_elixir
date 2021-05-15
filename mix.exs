@@ -48,7 +48,9 @@ defmodule Juralen.MixProject do
       {:absinthe, "~> 1.6"},
       {:absinthe_plug, "~> 1.5"},
       {:joken, "~> 2.0"},
-      {:bcrypt_elixir, "~> 2.0"}
+      {:bcrypt_elixir, "~> 2.0"},
+      {:redix, ">= 0.0.0"},
+      {:uuid, "~> 1.1"}
     ]
   end
 
