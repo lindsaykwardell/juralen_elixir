@@ -1,6 +1,11 @@
 defmodule Juralen.Game.Init do
   def generate_game() do
-    %{uuid: UUID.uuid4(), grid: [], players: [], settings: %{max_x: 8, max_y: 8}}
+    %{
+      uuid: UUID.uuid4(),
+      grid: [],
+      players: [],
+      settings: nil
+    }
   end
 
   def generate_grid(game) do

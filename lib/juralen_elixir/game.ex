@@ -1,10 +1,13 @@
 defmodule Juralen.Game do
   alias Juralen.Game.Init
   alias Juralen.Game.Player
+  alias Juralen.Game.Settings
   alias Juralen.Accounts
 
-  def create_game() do
+  def create_game(user, name) do
     Init.generate_game()
+    |> Settings.update_settings(%{Settings.generate_settings() | name: name})
+    |> Player.add_player(user)
     |> save_game()
   end
 
@@ -21,7 +24,9 @@ defmodule Juralen.Game do
   end
 
   def update_settings(uuid, settings) do
-    save_game(%{get_game!(uuid) | settings: settings})
+    get_game!(uuid)
+    |> Settings.update_settings(settings)
+    |> save_game()
   end
 
   def start_game(uuid) do

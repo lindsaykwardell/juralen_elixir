@@ -1,12 +1,32 @@
 defmodule JuralenWeb.GameResolver do
   alias Juralen.Game
 
+  def create_game(_root, args, %{context: %{current_user: current_user}}) do
+    Game.create_game(current_user, args[:name] || "New Game")
+  end
+
   def create_game(_root, _args, _info) do
-    Game.create_game()
+    {:error, "Unauthorized"}
+  end
+
+  def join_game(_root, args, %{context: %{current_user: current_user}}) do
+    Game.add_player(args[:uuid], current_user.id)
+  end
+
+  def join_game(_root, _args, _info) do
+    {:error, "Unauthorized"}
   end
 
   def add_player(_root, args, _info) do
     Game.add_player(args[:uuid], args[:user_id])
+  end
+
+  def leave_game(_root, args, %{context: %{current_user: current_user}}) do
+    Game.remove_player(args[:uuid], current_user.id)
+  end
+
+  def leave_game(_root, _args, _info) do
+    {:error, "Unauthorized"}
   end
 
   def remove_player(_root, args, _info) do

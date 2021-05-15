@@ -12,11 +12,13 @@ defmodule JuralenWeb.Schema.GameSchema do
   object :settings do
     field :max_x, non_null(:integer)
     field :max_y, non_null(:integer)
+    field :name, non_null(:string)
   end
 
   input_object :input_settings do
-    field :max_x, non_null(:integer)
-    field :max_y, non_null(:integer)
+    field :max_x, :integer
+    field :max_y, :integer
+    field :name, :string
   end
 
   object :player do
@@ -60,7 +62,16 @@ defmodule JuralenWeb.Schema.GameSchema do
   object :game_mutations do
     @desc "Create new game"
     field :create_game, :game do
+      arg(:name, :string)
+
       resolve(&GameResolver.create_game/3)
+    end
+
+    @desc "Add the logged in player to a game"
+    field :join_game, :game do
+      arg(:uuid, non_null(:string))
+
+      resolve(&GameResolver.join_game/3)
     end
 
     @desc "Add player to game"
@@ -69,6 +80,13 @@ defmodule JuralenWeb.Schema.GameSchema do
       arg(:user_id, non_null(:integer))
 
       resolve(&GameResolver.add_player/3)
+    end
+
+    @desc "Logged in user leaves the game"
+    field :leave_game, :game do
+      arg(:uuid, non_null(:string))
+
+      resolve(&GameResolver.leave_game/3)
     end
 
     @desc "Remove a player from a game"
