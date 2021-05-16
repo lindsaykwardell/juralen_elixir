@@ -8,15 +8,20 @@
     "generate": "gqless generate"
   },
   "dependencies": {
+    "@absinthe/socket": "^0.2.1",
+    "@absinthe/socket-apollo-link": "^0.2.1",
+    "@apollo/client": "^3.3.18",
     "@gqless/react": "^2.0.15",
     "@gqless/subscriptions": "^1.0.11",
+    "@jumpn/utils-graphql": "^0.6.0",
     "elm-webpack-loader": "^8.0.0",
     "gqless": "^2.0.13",
     "phoenix": "file:../deps/phoenix",
     "phoenix_html": "file:../deps/phoenix_html",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-elm-components": "^1.1.0"
+    "react-elm-components": "^1.1.0",
+    "subscriptions-transport-ws": "^0.9.18"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
