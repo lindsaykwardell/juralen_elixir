@@ -1,5 +1,7 @@
 defmodule JuralenWeb.UserSocket do
   use Phoenix.Socket
+  use Absinthe.Phoenix.Socket,
+    schema: JuralenWeb.Schema
 
   ## Channels
   # channel "room:*", JuralenWeb.RoomChannel
@@ -16,7 +18,12 @@ defmodule JuralenWeb.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   @impl true
-  def connect(_params, socket, _connect_info) do
+  def connect(params, socket, _connect_info) do
+    # current_user = current_user(params)
+    # socket = Absinthe.Phoenix.Socket.put_opts(socket, context: %{
+    #   current_user: current_user
+    # })
+    socket = Absinthe.Phoenix.Socket.put_options(socket, context: %{})
     {:ok, socket}
   end
 

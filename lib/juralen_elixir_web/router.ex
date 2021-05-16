@@ -22,6 +22,11 @@ defmodule JuralenWeb.Router do
 
     get "/", PageController, :index
     get "/login", UserController, :login
+
+    # forward "/graphiql",
+    #     Absinthe.Plug.GraphiQL,
+    #     schema: JuralenWeb.Schema,
+    #     socket: JuralenWeb.UserSocket
   end
 
   scope "/api" do

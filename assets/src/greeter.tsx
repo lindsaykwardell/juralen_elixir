@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { useQuery } from "./gqless";
+import { useQuery, useSubscription } from "./gqless";
 
 interface GreeterProps {
   name: string;
@@ -9,12 +9,18 @@ const UserList = () => {
   const query = useQuery({
     suspense: true,
   });
+  const { newGameCreated } = useSubscription();
 
   return (
     <div>
-      {query.allUsers.map((user) => (
-        <div key={user.id}>{user.id}: {user.name} ({user.email})</div>
-      ))}
+      <div>
+        {query.allUsers.map((user) => (
+          <div key={user.id}>
+            {user.id}: {user.name} ({user.email})
+          </div>
+        ))}
+      </div>
+      {newGameCreated({ uuid: "1b76f699-3716-4f93-b897-e3b336fdeee8" })}
     </div>
   );
 };
@@ -34,9 +40,9 @@ const Greeter: React.FC<GreeterProps> = (props: GreeterProps) => {
           <input type="password" className="w-52 p-1 text-black" />
         </label>
       </form>
-      {/* <Suspense fallback="Loading...">
+      <Suspense fallback="Loading...">
         <UserList />
-      </Suspense> */}
+      </Suspense>
     </section>
   );
 };

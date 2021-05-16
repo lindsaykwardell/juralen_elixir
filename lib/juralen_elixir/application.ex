@@ -14,9 +14,10 @@ defmodule Juralen.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Juralen.PubSub},
       # Start the Endpoint (http/https)
-      JuralenWeb.Endpoint
+      JuralenWeb.Endpoint,
       # Start a worker by calling: Juralen.Worker.start_link(arg)
       # {Juralen.Worker, arg}
+      {Absinthe.Subscription, JuralenWeb.Endpoint}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

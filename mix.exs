@@ -47,6 +47,7 @@ defmodule Juralen.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:absinthe, "~> 1.6"},
       {:absinthe_plug, "~> 1.5"},
+      {:absinthe_phoenix, "~> 2.0.1"},
       {:joken, "~> 2.0"},
       {:bcrypt_elixir, "~> 2.0"},
       {:redix, ">= 0.0.0"},
