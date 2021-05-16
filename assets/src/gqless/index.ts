@@ -38,7 +38,7 @@ const subscriptionsClient =
         wsEndpoint: () => {
           // Modify if needed
           const url = new URL(
-            "http://localhost:4000/api/websocket",
+            "http://localhost:4000/socket/websocket",
             window.location.href
           );
           url.protocol = url.protocol.replace("http", "ws");
