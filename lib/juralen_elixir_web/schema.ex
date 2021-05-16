@@ -15,7 +15,7 @@ defmodule JuralenWeb.Schema do
   end
 
   subscription do
-    field :new_game_created, :string do
+    field :new_game_created, :game do
       arg :uuid, :string
 
       config fn args, _ ->

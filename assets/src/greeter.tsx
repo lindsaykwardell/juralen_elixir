@@ -26,7 +26,7 @@ const httpLink = new HttpLink({
 });
 
 const absintheSocket = AbsintheSocket.create(
-  new PhoenixSocket("http://localhost:4000/socket", {
+  new PhoenixSocket("ws://localhost:4000/socket", {
     // params: () => {
     //   if (Cookies.get("token")) {
     //     return { token: Cookies.get("token") };
