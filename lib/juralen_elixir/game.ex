@@ -70,6 +70,7 @@ defmodule Juralen.Game do
 
     case Redix.command(conn, ["SET", game[:uuid], Jason.encode!(game)]) do
       {:ok, "OK"} ->
+        Absinthe.Subscription.publish(JuralenWeb.Endpoint, game, updated_game: game[:uuid])
         {:ok, game}
 
       {:error, val} ->
