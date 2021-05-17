@@ -51,7 +51,8 @@ defmodule Juralen.MixProject do
       {:joken, "~> 2.0"},
       {:bcrypt_elixir, "~> 2.0"},
       {:redix, ">= 0.0.0"},
-      {:uuid, "~> 1.1"}
+      {:uuid, "~> 1.1"},
+      {:cors_plug, "~> 2.0"}
     ]
   end
 
