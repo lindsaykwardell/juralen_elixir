@@ -17,18 +17,6 @@ defmodule JuralenWeb.Router do
     plug JuralenWeb.Context
   end
 
-  scope "/", JuralenWeb do
-    pipe_through :browser
-
-    get "/", PageController, :index
-    get "/login", UserController, :login
-
-    # forward "/graphiql",
-    #     Absinthe.Plug.GraphiQL,
-    #     schema: JuralenWeb.Schema,
-    #     socket: JuralenWeb.UserSocket
-  end
-
   scope "/api" do
     pipe_through :graphql
 
