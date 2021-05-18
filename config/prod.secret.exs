@@ -37,7 +37,7 @@ redis_url =
   """
 
 config :redix,
-  uri_or_opts: redis_url
+  uri: redis_url
 
 # ## Using releases (Elixir v1.9+)
 #

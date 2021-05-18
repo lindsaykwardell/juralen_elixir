@@ -59,4 +59,4 @@ config :phoenix, :plug_init_mode, :runtime
 config :joken, default_signer: "secret"
 
 config :redix,
-  uri_or_opts: "redis://localhost:6379"
+  uri: "redis://localhost:6379"
