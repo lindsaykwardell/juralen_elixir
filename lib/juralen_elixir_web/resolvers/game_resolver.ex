@@ -1,6 +1,10 @@
 defmodule JuralenWeb.GameResolver do
   alias Juralen.Game
 
+  def get_lobby(_root, _args, _info) do
+    {:ok, Juralen.Game.Lobby.fetch_lobby()}
+  end
+
   def create_game(_root, args, %{context: %{current_user: current_user}}) do
     Game.create_game(current_user, args[:name] || "New Game")
   end

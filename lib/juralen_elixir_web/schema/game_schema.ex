@@ -51,6 +51,11 @@ defmodule JuralenWeb.Schema.GameSchema do
   end
 
   object :game_queries do
+    @desc "Get lobby"
+    field :get_lobby, list_of(:game) do
+      resolve &GameResolver.get_lobby/3
+    end
+
     @desc "Get game"
     field :get_game, :game do
       arg(:uuid, non_null(:string))

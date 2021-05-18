@@ -17,4 +17,9 @@ defmodule Juralen.Cache do
     connect!()
     |> Redix.command(["GET", key])
   end
+
+  def get!(key) do
+    connect!()
+    |> Redix.command!(["GET", key])
+  end
 end
