@@ -51,6 +51,7 @@ defmodule Juralen.Game do
   end
 
   defp get_game!(uuid) do
+    IO.puts(System.get_env("REDIS_URL"))
     {:ok, conn} = Redix.start_link(System.get_env("REDIS_URL") || "redis://localhost:6379")
 
     case Redix.command(conn, ["GET", uuid]) do
@@ -66,6 +67,7 @@ defmodule Juralen.Game do
   end
 
   defp save_game(game) do
+    IO.puts(System.get_env("REDIS_URL"))
     {:ok, conn} = Redix.start_link(System.get_env("REDIS_URL") || "redis://localhost:6379")
 
     case Redix.command(conn, ["SET", game[:uuid], Jason.encode!(game)]) do
@@ -73,8 +75,8 @@ defmodule Juralen.Game do
         Absinthe.Subscription.publish(JuralenWeb.Endpoint, game, updated_game: game[:uuid])
         {:ok, game}
 
-      {:error, val} ->
-        {:error, val}
+      {:error, err} ->
+        raise err
     end
   end
 end
