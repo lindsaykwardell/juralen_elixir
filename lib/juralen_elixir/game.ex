@@ -3,42 +3,41 @@ defmodule Juralen.Game do
   alias Juralen.Game.Player
   alias Juralen.Game.Settings
   alias Juralen.Accounts
+  alias Juralen.Cache
 
   def create_game(user, name) do
     Init.generate_game()
     |> Settings.update_settings(%{Settings.generate_settings() | name: name})
     |> Player.add_player(user)
-    |> save_game()
+    |> update_game()
   end
 
   def add_player(uuid, id) do
     get_game!(uuid)
     |> Player.add_player(Accounts.get_user!(id))
-    |> save_game()
+    |> update_game()
   end
 
   def remove_player(uuid, id) do
     get_game!(uuid)
     |> Player.remove_player(id)
-    |> save_game()
+    |> update_game()
   end
 
   def update_settings(uuid, settings) do
     get_game!(uuid)
     |> Settings.update_settings(settings)
-    |> save_game()
+    |> update_game()
   end
 
   def start_game(uuid) do
     get_game!(uuid)
     |> Init.generate_grid()
-    |> save_game()
+    |> update_game()
   end
 
   def get_game(uuid) do
-    {:ok, conn} = Redix.start_link(System.get_env("REDIS_URL") || "redis://localhost:6379")
-
-    case Redix.command(conn, ["GET", uuid]) do
+    case Cache.get(uuid) do
       {:ok, nil} ->
         {:error, "No game exists"}
 
@@ -51,9 +50,7 @@ defmodule Juralen.Game do
   end
 
   defp get_game!(uuid) do
-    {:ok, conn} = Redix.start_link(System.get_env("REDIS_URL") || "redis://localhost:6379")
-
-    case Redix.command(conn, ["GET", uuid]) do
+    case Cache.get(uuid) do
       {:ok, nil} ->
         raise "No game exists"
 
@@ -65,10 +62,8 @@ defmodule Juralen.Game do
     end
   end
 
-  defp save_game(game) do
-    {:ok, conn} = Redix.start_link(System.get_env("REDIS_URL") || "redis://localhost:6379")
-
-    case Redix.command(conn, ["SET", game[:uuid], Jason.encode!(game)]) do
+  defp update_game(game) do
+    case Cache.set(game[:uuid], Jason.encode!(game)) do
       {:ok, "OK"} ->
         Absinthe.Subscription.publish(JuralenWeb.Endpoint, game, updated_game: game[:uuid])
         {:ok, game}
