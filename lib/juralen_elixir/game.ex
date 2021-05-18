@@ -51,8 +51,7 @@ defmodule Juralen.Game do
   end
 
   defp get_game!(uuid) do
-    IO.puts(System.get_env("REDIS_URL"))
-    {:ok, conn} = Redix.start_link(System.get_env("REDIS_URL") || "redis://localhost:6379")
+    {:ok, conn} = Redix.start_link()
 
     case Redix.command(conn, ["GET", uuid]) do
       {:ok, nil} ->
@@ -67,8 +66,7 @@ defmodule Juralen.Game do
   end
 
   defp save_game(game) do
-    IO.puts(System.get_env("REDIS_URL"))
-    {:ok, conn} = Redix.start_link(System.get_env("REDIS_URL") || "redis://localhost:6379")
+    {:ok, conn} = Redix.start_link()
 
     case Redix.command(conn, ["SET", game[:uuid], Jason.encode!(game)]) do
       {:ok, "OK"} ->
