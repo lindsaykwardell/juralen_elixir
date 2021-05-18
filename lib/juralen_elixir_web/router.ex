@@ -1,18 +1,6 @@
 defmodule JuralenWeb.Router do
   use JuralenWeb, :router
 
-  pipeline :browser do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_flash
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
-  end
-
-  pipeline :api do
-    plug :accepts, ["json"]
-  end
-
   pipeline :graphql do
     plug JuralenWeb.Context
   end
@@ -23,11 +11,6 @@ defmodule JuralenWeb.Router do
     forward "/", Absinthe.Plug,
       schema: JuralenWeb.Schema
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", JuralenWeb do
-  #   pipe_through :api
-  # end
 
   # Enables LiveDashboard only for development
   #
@@ -40,7 +23,7 @@ defmodule JuralenWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/" do
-      pipe_through :browser
+      pipe_through [:fetch_session, :protect_from_forgery]
       live_dashboard "/dashboard", metrics: JuralenWeb.Telemetry
     end
   end
