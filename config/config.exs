@@ -15,7 +15,7 @@ config :juralen_elixir,
 config :juralen_elixir, JuralenWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "u7Ytmbk2lMnnAOcjktkkLwU4W2gff2/Jg/zd2euuZQVJMDWF4vMAOAKRdA1kd2AU",
-  render_errors: [view: JuralenWeb.ErrorView, accepts: ~w(html json), layout: false],
+  render_errors: [view: JuralenWeb.ErrorView, accepts: ~w(json), layout: false],
   pubsub_server: Juralen.PubSub,
   live_view: [signing_salt: "GRZ20lHx"]
 
