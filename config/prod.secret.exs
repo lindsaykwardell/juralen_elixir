@@ -30,15 +30,6 @@ config :juralen_elixir, JuralenWeb.Endpoint,
   ],
   secret_key_base: secret_key_base
 
-redis_url =
-  System.get_env("REDIS_URL") ||
-  raise """
-  environment variable REDIS_URL is missing.
-  """
-
-config :redix,
-  uri: redis_url
-
 # ## Using releases (Elixir v1.9+)
 #
 # If you are doing OTP releases, you need to instruct Phoenix
