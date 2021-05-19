@@ -51,9 +51,9 @@ defmodule JuralenWeb.Schema.GameSchema do
   end
 
   object :game_queries do
-    @desc "Get lobby"
-    field :get_lobby, list_of(:game) do
-      resolve &GameResolver.get_lobby/3
+    @desc "Get game queue"
+    field :get_game_queue, list_of(:game) do
+      resolve &GameResolver.get_game_queue/3
     end
 
     @desc "Get game"
@@ -115,6 +115,16 @@ defmodule JuralenWeb.Schema.GameSchema do
       arg(:uuid, non_null(:string))
 
       resolve(&GameResolver.start_game/3)
+    end
+  end
+
+  object :game_subscriptions do
+    field :updated_game, :game do
+      arg :uuid, :string
+
+      config fn args, _ ->
+        {:ok, topic: args.uuid}
+      end
     end
   end
 end

@@ -22,4 +22,9 @@ defmodule Juralen.Cache do
     connect!()
     |> Redix.command!(["GET", key])
   end
+
+  def delete(key) do
+    connect!()
+    |> Redix.command(["DEL", "KEY", key])
+  end
 end

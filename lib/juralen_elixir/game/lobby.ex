@@ -2,100 +2,124 @@ defmodule Juralen.Game.Lobby do
   alias Juralen.Cache
   alias Juralen.Game.ActiveGames
 
+  def join_lobby do
+    # Absinthe.Subscription.publish(JuralenWeb.Endpoint, fetch_game_queue(),
+    #   game_queue: "game_queue"
+    # )
+
+    {:ok, "OK"}
+  end
+
   def add_game(uuid) do
-    Cache.get("lobby")
+    Cache.get("game_queue")
     |> case do
       {:ok, nil} ->
-        update_lobby([uuid])
+        update_game_queue([uuid])
 
-      {:ok, lobby} ->
-        prev_lobby = Jason.decode!(lobby, keys: :atoms)
+      {:ok, game_queue} ->
+        prev_game_queue = Jason.decode!(game_queue, keys: :atoms)
 
-        case Enum.find(prev_lobby, fn existing_game ->
+        case Enum.find(prev_game_queue, fn existing_game ->
                uuid == existing_game
              end) do
           nil ->
-            [uuid | prev_lobby]
+            [uuid | prev_game_queue]
 
           _ ->
-            prev_lobby
+            prev_game_queue
         end
-        |> update_lobby()
+        |> update_game_queue()
 
       _ ->
-        update_lobby([uuid])
+        update_game_queue([uuid])
     end
   end
 
   def remove_game(uuid) do
-    Cache.get("lobby")
+    Cache.get("game_queue")
     |> case do
       {:ok, nil} ->
-        update_lobby([])
+        update_game_queue([])
 
-      {:ok, lobby} ->
-        Jason.decode!(lobby, keys: :atoms)
+      {:ok, game_queue} ->
+        Jason.decode!(game_queue, keys: :atoms)
         |> Enum.filter(fn existing_game ->
           uuid !== existing_game
         end)
-        |> update_lobby()
+        |> update_game_queue()
 
       _ ->
-        update_lobby([])
+        update_game_queue([])
     end
   end
 
-  defp update_lobby(lobby) do
-    case Cache.set("lobby", Jason.encode!(lobby)) do
+  defp update_game_queue(game_queue) do
+    case Cache.set("game_queue", Jason.encode!(game_queue)) do
       {:ok, _} ->
-        Absinthe.Subscription.publish(JuralenWeb.Endpoint, fetch_lobby(lobby), lobby: "lobby")
-        {:ok, lobby}
+        Absinthe.Subscription.publish(JuralenWeb.Endpoint, fetch_game_queue(game_queue),
+          game_queue: "game_queue"
+        )
+
+        {:ok, game_queue}
 
       {:error, err} ->
         {:error, err}
     end
   end
 
-  def fetch_lobby() do
-    Cache.get!("lobby")
-    |> Jason.decode!()
-    |> fetch_lobby()
-  end
+  def fetch_game_queue() do
+    case Cache.get("game_queue") do
+      {:ok, nil} ->
+        []
 
-  defp fetch_lobby(lobby) do
-    if length(lobby) == 0, do: []
+      {:ok, game_queue} ->
+        game_queue
+        |> Jason.decode!(keys: :atoms)
+        |> fetch_game_queue()
 
-    [head | tail] = lobby
-
-    if head == nil, do: []
-
-    case ActiveGames.get_game(head) do
-      {:ok, game} ->
-        fetch_lobby(tail, [game])
-
-      {:error, _} ->
-        remove_game(head)
-        fetch_lobby(tail, [])
+      {:error, err} ->
+        raise err
     end
   end
 
-  defp fetch_lobby(lobby, games) do
-    case length(lobby) do
+  defp fetch_game_queue(game_queue) do
+    case length(game_queue) do
+      0 ->
+        []
+
+      _ ->
+        head = hd(game_queue)
+
+        if head == nil, do: []
+
+        case ActiveGames.get_game(head) do
+          {:ok, game} ->
+            fetch_game_queue(tl(game_queue), [game])
+
+          {:error, _} ->
+            remove_game(head)
+            fetch_game_queue(tl(game_queue), [])
+        end
+    end
+  end
+
+  defp fetch_game_queue(game_queue, games) do
+    case length(game_queue) do
       0 ->
         games
 
       _ ->
-        head = hd(lobby)
+        head = hd(game_queue)
 
         if head == nil, do: games
 
         case ActiveGames.get_game(head) do
           {:ok, game} ->
-            fetch_lobby(tl(lobby), [game | games])
+            fetch_game_queue(tl(game_queue), [game | games])
 
           {:error, _} ->
             remove_game(head)
-            fetch_lobby(tl(lobby), games)
+            fetch_game_queue(tl(game_queue), games)
         end
     end
   end

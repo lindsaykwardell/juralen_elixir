@@ -29,14 +29,31 @@ defmodule Juralen.Game.ActiveGames do
   end
 
   def update_game(game) do
-    case Cache.set(game[:uuid], Jason.encode!(game)) do
-      {:ok, "OK"} ->
-        Absinthe.Subscription.publish(JuralenWeb.Endpoint, game, updated_game: game[:uuid])
-        Lobby.add_game(game[:uuid])
-        {:ok, game}
+    case length(game[:players]) do
+      0 ->
+        remove_game(game)
 
-      {:error, err} ->
-        raise err
+      _ ->
+        case Cache.set(game[:uuid], Jason.encode!(game)) do
+          {:ok, "OK"} ->
+            Absinthe.Subscription.publish(JuralenWeb.Endpoint, game, updated_game: game[:uuid])
+            Lobby.add_game(game[:uuid])
+            {:ok, game}
+
+          {:error, err} ->
+            raise err
+        end
+    end
+  end
+
+  def remove_game(game) do
+    case Cache.delete(game[:uuid]) do
+      {:ok, 1} ->
+        Lobby.remove_game(game[:uuid])
+        {:ok, %{uuid: game[:uuid]}}
+
+      _ ->
+        raise "Game does not exist"
     end
   end
 end
