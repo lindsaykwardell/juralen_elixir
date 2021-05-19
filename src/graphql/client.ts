@@ -8,6 +8,7 @@ import { ApolloLink, split } from "apollo-link";
 import * as AbsintheSocket from "@absinthe/socket";
 import { Socket as PhoenixSocket } from "phoenix";
 import { createAbsintheSocketLink } from "@absinthe/socket-apollo-link";
+// @ts-ignore
 import { hasSubscription } from "@jumpn/utils-graphql";
 
 const httpLink = createHttpLink({
