@@ -10,8 +10,9 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :juralen_elixir, JuralenWeb.Endpoint,
-  url: [host: "example.com", port: 80],
+  url: [host: "juralen-elixir-vue.netlify.app", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
+  check_origin: ["https://juralen-elixir-vue.netlify.app"]
 
 # Do not print debug messages in production
 config :logger, level: :info
