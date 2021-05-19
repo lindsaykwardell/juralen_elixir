@@ -7,12 +7,13 @@
       ({{ user.id }}) {{ user.name }} | {{ user.email }}
     </li>
   </ul>
-  <div>{{ sub }}</div>
+  <GameQueue v-if="sub" :gameQueue="sub.gameQueue" />
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted } from "vue";
 import { useQuery, useSubscription, useMutation } from "@/graphql";
+import GameQueue from "./components/lobby/GameQueue.vue";
 import gql from "graphql-tag";
 
 export default defineComponent({
@@ -22,16 +23,14 @@ export default defineComponent({
       subscription GameQueue {
         gameQueue {
           uuid
-          # grid {
-          #   x
-          #   y
-          #   cellType
-          #   structure
-          #   defBonus
-          # }
           players {
-            name
             id
+            name
+          }
+          settings {
+            maxX
+            maxY
+            name
           }
         }
       }
@@ -61,6 +60,9 @@ export default defineComponent({
       data,
       sub,
     };
+  },
+  components: {
+    GameQueue,
   },
 });
 </script>
