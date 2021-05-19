@@ -1,10 +1,10 @@
 import {
   ApolloClient,
   // split,
-} from 'apollo-client';
-import { createHttpLink } from 'apollo-link-http'
-import { InMemoryCache } from 'apollo-cache-inmemory'
-import { split } from 'apollo-link'
+} from "apollo-client";
+import { createHttpLink } from "apollo-link-http";
+import { InMemoryCache } from "apollo-cache-inmemory";
+import { ApolloLink, split } from "apollo-link";
 import * as AbsintheSocket from "@absinthe/socket";
 import { Socket as PhoenixSocket } from "phoenix";
 import { createAbsintheSocketLink } from "@absinthe/socket-apollo-link";
@@ -12,11 +12,11 @@ import { createAbsintheSocketLink } from "@absinthe/socket-apollo-link";
 import { hasSubscription } from "@jumpn/utils-graphql";
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:4000/api",
+  uri: process.env.VUE_APP_GRAPHQL_ENDPOINT,
 });
 
 const absintheSocket = AbsintheSocket.create(
-  new PhoenixSocket("ws://localhost:4000/socket", {
+  new PhoenixSocket(process.env.VUE_APP_GRAPHQL_SUB_ENDPOINT || "", {
     // params: () => {
     //   if (Cookies.get("token")) {
     //     return { token: Cookies.get("token") };
@@ -31,7 +31,7 @@ const socketLink = createAbsintheSocketLink(absintheSocket);
 
 const splitLink = split(
   (operation) => hasSubscription(operation.query),
-  socketLink as any,
+  socketLink as ApolloLink,
   httpLink
 );
 
@@ -40,4 +40,4 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-export default client
+export default client;
