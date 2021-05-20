@@ -1,9 +1,12 @@
 import { DocumentNode } from "graphql";
-import { ref } from "vue";
+import { Ref, ref } from "vue";
 import client from "./client";
 
-export default (query: DocumentNode, variables?: { [key: string]: any }) => {
-  const data = ref();
+export default <T>(query: DocumentNode, variables?: { [key: string]: unknown }): {
+  data: Ref<T | undefined>
+  loading: Ref<boolean>
+} => {
+  const data = ref<T>();
   const loading = ref(true);
 
   const observable = client.subscribe({

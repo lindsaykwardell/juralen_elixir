@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "server": "mix phx.server",
+    "server": "docker container start postgres-dev && docker container start redis-dev && mix phx.server",
     "serve": "vue-cli-service serve",
     "dev": "start-server-and-test server http://localhost:4000/dashboard/home serve",
     "build": "vue-cli-service build",

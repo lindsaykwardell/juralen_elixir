@@ -1,9 +1,16 @@
-import { ref } from "vue";
+import { Ref, ref } from "vue";
 import client from "./client";
 import { DocumentNode } from "graphql";
 
-export default (mutation: DocumentNode, variables?: { [key: string]: any }) => {
-  const data = ref();
+export default <T>(
+  mutation: DocumentNode,
+  variables?: { [key: string]: unknown }
+): {
+  data: Ref<T | undefined>;
+  loading: Ref<boolean>;
+  error: Ref<unknown>;
+} => {
+  const data = ref<T>();
   const loading = ref(true);
   const error = ref({});
 
