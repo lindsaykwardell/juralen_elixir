@@ -1,6 +1,6 @@
 <template>
   <button
-    class="py-2 px-4 mx-8 shadow my-1 hover:bg-gray-100 flex"
+    class="py-2 px-4 mx-8 shadow my-1 bg-gray-200 hover:bg-gray-400 transition duration-50 flex"
     @click="joinGame"
   >
     <div class="w-20 border-r border-black">

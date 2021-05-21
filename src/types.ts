@@ -15,5 +15,11 @@ export interface Game {
     cellType: string;
     defBonus: number;
     structure: string;
-  }
+  };
+}
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
 }

@@ -9,28 +9,31 @@ export default <T>(
   data: Ref<T | undefined>;
   loading: Ref<boolean>;
   error: Ref<unknown>;
+  refetch: () => Promise<void>
 } => {
   const data = ref();
   const loading = ref(true);
   const error = ref({});
 
-  client
-    .query({
-      query,
-      variables,
-    })
-    .then((res) => {
-      loading.value = false;
-      data.value = res.data;
-    })
-    .catch((err) => {
-      loading.value = false;
-      error.value = err;
-    });
+  const refetch = () =>
+    client
+      .query({
+        query,
+        variables,
+      })
+      .then((res) => {
+        loading.value = false;
+        data.value = res.data;
+      })
+      .catch((err) => {
+        loading.value = false;
+        error.value = err;
+      });
 
   return {
     data,
     loading,
     error,
+    refetch
   };
 };

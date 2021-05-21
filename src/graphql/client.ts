@@ -10,9 +10,24 @@ import { Socket as PhoenixSocket } from "phoenix";
 import { createAbsintheSocketLink } from "@absinthe/socket-apollo-link";
 // @ts-ignore
 import { hasSubscription } from "@jumpn/utils-graphql";
+import { useProfileStore } from "@/hooks/useProfile";
+
+// const profile = useProfileStore();
 
 const httpLink = createHttpLink({
   uri: process.env.VUE_APP_GRAPHQL_ENDPOINT,
+});
+
+const authLink = new ApolloLink((operation, forward) => {
+  // if (profile.isLoggedIn) {
+  //   operation.setContext({
+  //     headers: {
+  //       authorization: `Bearer ${profile.token}`,
+  //     },
+  //   });
+  // }
+
+  return forward(operation);
 });
 
 const absintheSocket = AbsintheSocket.create(
@@ -32,7 +47,7 @@ const socketLink = createAbsintheSocketLink(absintheSocket);
 const splitLink = split(
   (operation) => hasSubscription(operation.query),
   socketLink as ApolloLink,
-  httpLink
+  authLink.concat(httpLink)
 );
 
 const client = new ApolloClient({

@@ -37,5 +37,13 @@ defmodule JuralenWeb.Schema.UserSchema do
 
       resolve &UserResolver.register/3
     end
+
+    @desc "Log in"
+    field :login, :string do
+      arg :email, non_null(:string)
+      arg :password, non_null(:string)
+
+      resolve &UserResolver.login/3
+    end
   end
 end
