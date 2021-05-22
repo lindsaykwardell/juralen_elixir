@@ -2,6 +2,7 @@ import { useQuery, useMutation } from "@/graphql";
 import { User } from "@/types";
 import gql from "graphql-tag";
 import { defineStore } from "pinia";
+import { Ref } from "vue";
 
 export const useProfileStore = defineStore({
   id: "profile",
@@ -9,7 +10,7 @@ export const useProfileStore = defineStore({
     token: null | string;
   } {
     return {
-      token: null,
+      token: localStorage.getItem("token"),
     };
   },
   getters: {
@@ -18,13 +19,15 @@ export const useProfileStore = defineStore({
   actions: {
     setToken(token: string) {
       this.token = token;
+      localStorage.setItem("token", token);
     },
   },
 });
 
 export default function useProfile(): {
-  profile: User | undefined;
+  profile: Ref<{ profile: User | undefined } | undefined>;
   login: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
 } {
   const profileStore = useProfileStore();
   const { data: profileData, refetch } = useQuery<{ profile: User }>(gql`
@@ -37,11 +40,23 @@ export default function useProfile(): {
     }
   `);
 
-  const [loginMutation, { error }] = useMutation<{
+  const [loginMutation, { error: loginError }] = useMutation<{
     login: string;
   }>(gql`
-    mutation Login($email: String, $password: String) {
+    mutation Login($email: String!, $password: String!) {
       login(email: $email, password: $password)
+    }
+  `);
+
+  const [registerMutation, { error: registerError }] = useMutation<{
+    register: User;
+  }>(gql`
+    mutation Register($name: String!, $email: String!, $password: String!) {
+      register(name: $name, email: $email, password: $password) {
+        name
+        id
+        email
+      }
     }
   `);
 
@@ -49,11 +64,17 @@ export default function useProfile(): {
     const { login } = await loginMutation({ variables: { email, password } });
     profileStore.setToken(login);
     refetch();
-    error.value?.length ? Promise.reject() : Promise.resolve();
+    loginError.value?.length ? Promise.reject() : Promise.resolve();
+  };
+
+  const register = async (name: string, email: string, password: string) => {
+    await registerMutation({ variables: { name, email, password } });
+    registerError.value?.length ? Promise.reject() : Promise.resolve();
   };
 
   return {
-    profile: profileData.value?.profile,
+    profile: profileData,
     login,
+    register,
   };
 }

@@ -19,10 +19,11 @@ export default <T>(
   const error = ref<readonly GraphQLError[] | undefined>();
 
   const refetch = async () => {
+    console.log("Refetching!")
     if (!client) throw new Error("GraphQL Client is not defined!");
 
     try {
-      const res = await client.query({
+      const res = await client.query<T>({
         query,
         variables,
       });
@@ -33,6 +34,8 @@ export default <T>(
       loading.value = false;
       error.value = err;
     }
+
+    console.log(data.value);
   };
 
   refetch();
