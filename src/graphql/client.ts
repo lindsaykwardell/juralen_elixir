@@ -1,7 +1,4 @@
-import {
-  ApolloClient,
-  // split,
-} from "apollo-client";
+import { ApolloClient } from "apollo-client";
 import { createHttpLink } from "apollo-link-http";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { ApolloLink, split } from "apollo-link";
@@ -11,48 +8,53 @@ import { createAbsintheSocketLink } from "@absinthe/socket-apollo-link";
 // @ts-ignore
 import { hasSubscription } from "@jumpn/utils-graphql";
 import { useProfileStore } from "@/hooks/useProfile";
+import { provide } from "vue";
 
-// const profile = useProfileStore();
+const useGraphql = (): void => {
+  const profile = useProfileStore();
 
-const httpLink = createHttpLink({
-  uri: process.env.VUE_APP_GRAPHQL_ENDPOINT,
-});
+  const httpLink = createHttpLink({
+    uri: process.env.VUE_APP_GRAPHQL_ENDPOINT,
+  });
 
-const authLink = new ApolloLink((operation, forward) => {
-  // if (profile.isLoggedIn) {
-  //   operation.setContext({
-  //     headers: {
-  //       authorization: `Bearer ${profile.token}`,
-  //     },
-  //   });
-  // }
+  const authLink = new ApolloLink((operation, forward) => {
+    if (profile.isLoggedIn) {
+      operation.setContext({
+        headers: {
+          authorization: `Bearer ${profile.token}`,
+        },
+      });
+    }
 
-  return forward(operation);
-});
+    return forward(operation);
+  });
 
-const absintheSocket = AbsintheSocket.create(
-  new PhoenixSocket(process.env.VUE_APP_GRAPHQL_SUB_ENDPOINT || "", {
-    // params: () => {
-    //   if (Cookies.get("token")) {
-    //     return { token: Cookies.get("token") };
-    //   } else {
-    //     return {};
-    //   }
-    // },
-  })
-);
+  const absintheSocket = AbsintheSocket.create(
+    new PhoenixSocket(process.env.VUE_APP_GRAPHQL_SUB_ENDPOINT || "", {
+      // params: () => {
+      //   if (Cookies.get("token")) {
+      //     return { token: Cookies.get("token") };
+      //   } else {
+      //     return {};
+      //   }
+      // },
+    })
+  );
 
-const socketLink = createAbsintheSocketLink(absintheSocket);
+  const socketLink = createAbsintheSocketLink(absintheSocket);
 
-const splitLink = split(
-  (operation) => hasSubscription(operation.query),
-  socketLink as ApolloLink,
-  authLink.concat(httpLink)
-);
+  const splitLink = split(
+    (operation) => hasSubscription(operation.query),
+    socketLink as ApolloLink,
+    authLink.concat(httpLink)
+  );
 
-const client = new ApolloClient({
-  link: splitLink,
-  cache: new InMemoryCache(),
-});
+  const client = new ApolloClient({
+    link: splitLink,
+    cache: new InMemoryCache(),
+  });
 
-export default client;
+  provide("graphql-client", client);
+};
+
+export default useGraphql;

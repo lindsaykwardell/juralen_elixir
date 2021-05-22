@@ -23,9 +23,9 @@ export const useProfileStore = defineStore({
 });
 
 export default function useProfile(): {
-  profile: User | undefined,
-  login: (email: string, password: string) => Promise<void>,
-}  {
+  profile: User | undefined;
+  login: (email: string, password: string) => Promise<void>;
+} {
   const profileStore = useProfileStore();
   const { data: profileData, refetch } = useQuery<{ profile: User }>(gql`
     query Profile {
@@ -37,20 +37,23 @@ export default function useProfile(): {
     }
   `);
 
-  const [loginMutation] = useMutation<{
+  const [loginMutation, { error }] = useMutation<{
     login: string;
-  }>(gql`mutation Login($email: String, password: $String) {
-    login(email: $email, password: $password)
-  }`);
+  }>(gql`
+    mutation Login($email: String, $password: String) {
+      login(email: $email, password: $password)
+    }
+  `);
 
   const login = async (email: string, password: string) => {
     const { login } = await loginMutation({ variables: { email, password } });
     profileStore.setToken(login);
     refetch();
+    error.value?.length ? Promise.reject() : Promise.resolve();
   };
 
   return {
     profile: profileData.value?.profile,
-    login
+    login,
   };
 }

@@ -1,6 +1,7 @@
-import { Ref, ref } from "vue";
-import client from "./client";
-import { DocumentNode } from "graphql";
+import { Ref, ref, inject } from "vue";
+import { DocumentNode, GraphQLError } from "graphql";
+import ApolloClient from "apollo-client";
+import { NormalizedCacheObject } from "apollo-cache-inmemory";
 
 export default <T>(
   query: DocumentNode,
@@ -8,32 +9,38 @@ export default <T>(
 ): {
   data: Ref<T | undefined>;
   loading: Ref<boolean>;
-  error: Ref<unknown>;
-  refetch: () => Promise<void>
+  error: Ref<readonly GraphQLError[] | undefined>;
+  refetch: () => Promise<void>;
 } => {
+  const client = inject<ApolloClient<NormalizedCacheObject>>("graphql-client");
+
   const data = ref();
   const loading = ref(true);
-  const error = ref({});
+  const error = ref<readonly GraphQLError[] | undefined>();
 
-  const refetch = () =>
-    client
-      .query({
+  const refetch = async () => {
+    if (!client) throw new Error("GraphQL Client is not defined!");
+
+    try {
+      const res = await client.query({
         query,
         variables,
-      })
-      .then((res) => {
-        loading.value = false;
-        data.value = res.data;
-      })
-      .catch((err) => {
-        loading.value = false;
-        error.value = err;
       });
+      loading.value = false;
+      data.value = res.data;
+      error.value = res.errors;
+    } catch (err) {
+      loading.value = false;
+      error.value = err;
+    }
+  };
+
+  refetch();
 
   return {
     data,
     loading,
     error,
-    refetch
+    refetch,
   };
 };
