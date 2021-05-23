@@ -1,5 +1,5 @@
 <template>
-  <div v-if="profile?.profile" class="xl:w-[1200px] m-auto shadow-xl h-[90vh] py-[5vh]">
+  <div v-if="profile?.profile" class="xl:w-[1200px] m-auto shadow-xl h-[90vh] my-[5vh] bg-black-50">
     <div class="flex text-white px-4 py-2">
       <div class="flex-grow">Welcome, {{ profile?.profile?.name }}!</div>
       <div class="flex">
@@ -71,6 +71,6 @@ export default defineComponent({
 
 <style lang="postcss" scoped>
 .lobby-contents {
-  height: calc(100% - 25px);
+  height: calc(100% - 44px);
 }
 </style>
