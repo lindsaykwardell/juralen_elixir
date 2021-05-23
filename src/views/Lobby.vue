@@ -1,9 +1,23 @@
 <template>
-  <div v-if="profile?.profile">
+  <div v-if="profile?.profile" class="xl:w-[1200px] m-auto shadow-xl h-[90vh] py-[5vh]">
     <div class="flex text-white px-4 py-2">
-      Welcome, {{ profile?.profile?.name }}!
+      <div class="flex-grow">Welcome, {{ profile?.profile?.name }}!</div>
+      <div class="flex">
+        <a href="#" class="px-4 hover:underline text-lg">Home</a>
+        <a href="#" class="px-4 hover:underline text-lg">Settings</a>
+      </div>
     </div>
-    <GameQueue v-if="sub" :gameQueue="sub.gameQueue" />
+    <hr class="w-full" />
+    <div class="flex lobby-contents">
+      <GameQueue v-if="sub" :gameQueue="sub.gameQueue" class="w-2/3" />
+      <div class="w-1/3 flex flex-col border-l border-white">
+        <div class="flex-grow">Stuff goes here</div>
+        <div class="h-1/3">
+          <h2 class="text-center text-2xl">Chat Room</h2>
+          <div class="h-full bg-white">Hello, there</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -13,7 +27,7 @@ import { useSubscription, useMutation } from "@/graphql";
 import GameQueue from "../components/lobby/GameQueue.vue";
 import gql from "graphql-tag";
 import { Game } from "@/types";
-import useProfile from "@/hooks/useProfile"
+import useProfile from "@/hooks/useProfile";
 
 export default defineComponent({
   name: "App",
@@ -46,7 +60,7 @@ export default defineComponent({
 
     return {
       sub,
-      profile
+      profile,
     };
   },
   components: {
@@ -54,3 +68,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="postcss" scoped>
+.lobby-contents {
+  height: calc(100% - 25px);
+}
+</style>
