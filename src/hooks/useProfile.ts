@@ -30,15 +30,20 @@ export default function useProfile(): {
   register: (name: string, email: string, password: string) => Promise<void>;
 } {
   const profileStore = useProfileStore();
-  const { data: profileData, refetch } = useQuery<{ profile: User }>(gql`
-    query Profile {
-      profile {
-        name
-        email
-        id
+  const { data: profileData, refetch } = useQuery<{ profile: User }>(
+    gql`
+      query Profile {
+        profile {
+          name
+          email
+          id
+        }
       }
+    `,
+    {
+      fetchPolicy: "network-only",
     }
-  `);
+  );
 
   const [loginMutation, { error: loginError }] = useMutation<{
     login: string;

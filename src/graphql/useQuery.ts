@@ -1,11 +1,14 @@
 import { Ref, ref, inject } from "vue";
 import { DocumentNode, GraphQLError } from "graphql";
-import ApolloClient from "apollo-client";
+import ApolloClient, { FetchPolicy } from "apollo-client";
 import { NormalizedCacheObject } from "apollo-cache-inmemory";
 
 export default <T>(
   query: DocumentNode,
-  variables?: { [key: string]: unknown }
+  options?: {
+    variables?: { [key: string]: unknown };
+    fetchPolicy?: FetchPolicy
+  }
 ): {
   data: Ref<T | undefined>;
   loading: Ref<boolean>;
@@ -19,13 +22,13 @@ export default <T>(
   const error = ref<readonly GraphQLError[] | undefined>();
 
   const refetch = async () => {
-    console.log("Refetching!")
     if (!client) throw new Error("GraphQL Client is not defined!");
 
     try {
       const res = await client.query<T>({
         query,
-        variables,
+        variables: options?.variables,
+        fetchPolicy: options?.fetchPolicy
       });
       loading.value = false;
       data.value = res.data;
@@ -34,8 +37,6 @@ export default <T>(
       loading.value = false;
       error.value = err;
     }
-
-    console.log(data.value);
   };
 
   refetch();
