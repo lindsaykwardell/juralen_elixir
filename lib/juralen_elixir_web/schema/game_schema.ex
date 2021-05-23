@@ -13,6 +13,7 @@ defmodule JuralenWeb.Schema.GameSchema do
     field :max_x, non_null(:integer)
     field :max_y, non_null(:integer)
     field :name, non_null(:string)
+    field :started, :boolean
   end
 
   input_object :input_settings do

@@ -5,7 +5,6 @@ defmodule Juralen.Game do
   alias Juralen.Game.ActiveGames
   alias Juralen.Accounts
 
-
   def create_game(user, name) do
     Init.generate_game()
     |> Settings.update_settings(%{Settings.generate_settings() | name: name})
@@ -34,6 +33,7 @@ defmodule Juralen.Game do
   def start_game(uuid) do
     ActiveGames.get_game!(uuid)
     |> Init.generate_grid()
+    |> Settings.update_settings(%{started: true})
     |> ActiveGames.update_game()
   end
 

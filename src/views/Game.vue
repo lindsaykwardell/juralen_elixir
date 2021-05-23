@@ -1,15 +1,16 @@
 <template>
-  <div>
+  <Container>
     {{ data }}
-  </div>
+  </Container>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onBeforeUnmount } from "vue";
 import { useSubscription, useMutation } from "@/graphql";
 import { Game } from "@/types";
 import gql from "graphql-tag";
 import { useRoute } from "vue-router";
+import Container from "@/components/Container.vue";
 
 export default defineComponent({
   setup() {
@@ -48,9 +49,38 @@ export default defineComponent({
       }
     );
 
+    const [joinGame] = useMutation<{ joinGame: Game }>(gql`
+      mutation JoinGame($uuid: String!) {
+        joinGame(uuid: $uuid) {
+          uuid
+        }
+      }
+    `);
+
+    const [leaveGame] = useMutation<{ leaveGame: Game }>(gql`
+      mutation LeaveGame($uuid: String!) {
+        leaveGame(uuid: $uuid) {
+          uuid
+        }
+      }
+    `);
+
+    setTimeout(() => {
+      joinGame({ variables: { uuid } });
+    }, 1);
+
+    onBeforeUnmount(() =>
+      process.env.NODE_ENV === "production"
+        ? leaveGame({ variables: { uuid } })
+        : null
+    );
+
     return {
       data,
     };
+  },
+  components: {
+    Container,
   },
 });
 </script>
