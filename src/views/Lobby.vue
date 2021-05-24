@@ -20,7 +20,7 @@
           <input
             v-model="gameName"
             type="text"
-            class="p-1 flex-grow ml-4"
+            class="p-1 flex-grow ml-4 text-black text-xl"
             placeholder="Game Name"
             aria-label="Game Name"
           />
