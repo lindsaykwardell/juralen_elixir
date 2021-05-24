@@ -35,6 +35,15 @@ defmodule JuralenWeb.UserResolver do
     end
   end
 
+  def refresh(_root, _args, %{context: %{current_user: current_user}}) do
+    {:ok, Juralen.Token.generate_and_sign!(%{"user_id" => current_user.id})}
+  end
+
+
+  def refresh(_root, _args, _info) do
+    {:error, nil}
+  end
+
   def profile(_root, _args, %{context: %{current_user: current_user}}) do
     {:ok, current_user}
   end

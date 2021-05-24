@@ -2,7 +2,7 @@ import { useQuery, useMutation } from "@/graphql";
 import { User } from "@/types";
 import gql from "graphql-tag";
 import { defineStore } from "pinia";
-import { Ref } from "vue";
+import { Ref, onBeforeUnmount } from "vue";
 
 export const useProfileStore = defineStore({
   id: "profile",
@@ -65,6 +65,14 @@ export default function useProfile(): {
     }
   `);
 
+  const [refreshTokenMutation, { error: refreshError }] = useMutation<{
+    refreshToken: string;
+  }>(gql`
+    mutation RefreshToken {
+      refreshToken
+    }
+  `);
+
   const login = async (email: string, password: string) => {
     const { login } = await loginMutation({ variables: { email, password } });
     profileStore.setToken(login);
@@ -76,6 +84,17 @@ export default function useProfile(): {
     await registerMutation({ variables: { name, email, password } });
     registerError.value?.length ? Promise.reject() : Promise.resolve();
   };
+
+  const refreshToken = async () => {
+    const { refreshToken } = await refreshTokenMutation();
+    profileStore.setToken(refreshToken);
+    refetch();
+    refreshError.value?.length ? Promise.reject() : Promise.resolve();
+  };
+
+  const refreshInterval = setInterval(() => refreshToken(), 300000);
+
+  onBeforeUnmount(() => clearInterval(refreshInterval));
 
   return {
     profile: profileData,

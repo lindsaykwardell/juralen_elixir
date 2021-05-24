@@ -45,5 +45,11 @@ defmodule JuralenWeb.Schema.UserSchema do
 
       resolve &UserResolver.login/3
     end
+
+    @desc "Regenerate auth token"
+    field :refresh_token, :string do
+
+      resolve &UserResolver.refresh/3
+    end
   end
 end
