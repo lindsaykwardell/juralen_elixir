@@ -45,11 +45,11 @@
             <label for="gridWidth">
               Width
             </label>
-            <input class="col-span-2" id="gridWidth" type="number" />
+            <input v-model="settings.maxX" class="text-black col-span-2" id="gridWidth" type="number" />
             <label for="gridHeight">
               Height
             </label>
-            <input class="col-span-2" id="gridHeight" type="number" />
+            <input v-model="settings.maxY" class="text-black col-span-2" id="gridHeight" type="number" />
           </div>
         </div>
       </div>
@@ -66,7 +66,7 @@ import useGame from "@/hooks/useGame";
 export default defineComponent({
   setup() {
     const uuid = useRoute().params.uuid;
-    const { game, joinGame, leaveGame } = useGame(uuid);
+    const { game, settings, joinGame, leaveGame } = useGame(uuid);
     const router = useRouter();
 
     setTimeout(() => {
@@ -79,6 +79,7 @@ export default defineComponent({
 
     return {
       game,
+      settings,
       leaveGame: () =>
         leaveGame().then(() =>
           router.push({

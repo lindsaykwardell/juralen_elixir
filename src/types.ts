@@ -7,12 +7,7 @@ export interface User {
 export interface Game {
   uuid: string;
   players: Player[];
-  settings: {
-    maxX: number;
-    maxY: number;
-    name: string;
-    started: boolean;
-  };
+  settings: Settings;
   grid: Cell[];
 }
 
@@ -21,11 +16,18 @@ export interface Player {
   uuid: string;
   name: string;
   resources: Resources;
-} 
+}
 
 export interface Resources {
   actions: number;
   gold: number;
+}
+
+export interface Settings {
+  maxX: number;
+  maxY: number;
+  name: string;
+  started?: boolean;
 }
 
 export interface Cell {

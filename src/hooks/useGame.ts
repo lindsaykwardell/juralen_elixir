@@ -1,12 +1,16 @@
 import { useSubscription, useMutation } from "@/graphql";
-import { Game } from "@/types";
+import { Game, Settings } from "@/types";
 import gql from "graphql-tag";
-import { computed, ComputedRef } from "@vue/runtime-core";
+import { computed, ComputedRef, watch } from "@vue/runtime-core";
+import { reactive, Ref, ref } from "vue";
+import { debouncedWatch } from '@vueuse/core'
+
 
 export default (
   uuid: string | string[]
 ): {
   game: ComputedRef<Game | undefined>;
+  settings: Settings;
   joinGame: () => Promise<{ joinGame: Game }>;
   leaveGame: () => Promise<{ leaveGame: Game }>;
 } => {
@@ -46,6 +50,23 @@ export default (
   );
 
   const game = computed(() => data.value?.updatedGame);
+  const settings = reactive<Settings>({
+    maxX: 8,
+    maxY: 8,
+    name: "",
+  });
+  const refreshingSettings = ref(false);
+
+  watch(game, () => {
+    if (game.value?.settings) {
+      refreshingSettings.value = true;
+      const { maxX, maxY, name } = game.value.settings;
+      settings.maxX = maxX;
+      settings.maxY = maxY;
+      settings.name = name;
+      refreshingSettings.value = false;
+    }
+  });
 
   const [joinGame] = useMutation<{ joinGame: Game }>(gql`
     mutation JoinGame($uuid: String!) {
@@ -63,8 +84,35 @@ export default (
     }
   `);
 
+  const [updateSettings] = useMutation(gql`
+    mutation UpdateSettings($uuid: String!, $settings: InputSettings!) {
+      updateGameSettings(uuid: $uuid, settings: $settings) {
+        uuid
+        settings {
+          maxX
+          maxY
+          name
+        }
+      }
+    }
+  `);
+
+  debouncedWatch(settings, () => {
+    if (!refreshingSettings.value && settings.maxX && settings.maxY) {
+      updateSettings({
+        variables: {
+          uuid,
+          settings: { ...settings, maxX: +settings.maxX, maxY: +settings.maxY },
+        },
+      });
+    }
+  }, {
+    debounce: 500
+  });
+
   return {
     game,
+    settings,
     joinGame: () => joinGame({ variables: { uuid } }),
     leaveGame: () => leaveGame({ variables: { uuid } }),
   };
