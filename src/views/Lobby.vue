@@ -30,8 +30,7 @@
       <div class="w-1/3 flex flex-col border-l border-white">
         <div class="flex-grow">Stuff goes here</div>
         <div class="h-1/3">
-          <h2 class="text-center text-2xl">Chat Room</h2>
-          <div class="h-full bg-white">Hello, there</div>
+          <div class="h-full bg-gray-100">Hello, there</div>
         </div>
       </div>
     </div>

@@ -1,9 +1,9 @@
 <template>
   <Container>
-    {{ data }}
-    <template v-if="data?.updatedGame">
+    {{ game }}
+    <template v-if="game">
       <div class="flex p-4">
-        <div class="text-3xl flex-grow">{{ data.updatedGame.settings.name }}</div>
+        <h1 class="text-3xl flex-grow">{{ game.settings.name }}</h1>
         <button
           class="border-2 border-red-500 px-4 py-2 hover:border-red-700 hover:bg-red-700 transition duration-75 rounded-full text-lg"
           @click="leaveGame"
@@ -13,7 +13,7 @@
       </div>
       <div class="m-6 py-4 bg-gray-900">
         <div
-          v-for="player in data.updatedGame.players"
+          v-for="player in game.players"
           :key="player.uuid"
           class="grid grid-cols-10 hover:bg-gray-800 p-2"
         >
@@ -37,89 +37,54 @@
           </div>
         </div>
       </div>
+      <div class="p-4">
+        <h2 class="text-2xl">Settings</h2>
+        <hr class="w-full my-4" />
+        <div class="flex">
+          <div class="w-1/6 grid grid-cols-3 gap-y-2">
+            <label for="gridWidth">
+              Width
+            </label>
+            <input class="col-span-2" id="gridWidth" type="number" />
+            <label for="gridHeight">
+              Height
+            </label>
+            <input class="col-span-2" id="gridHeight" type="number" />
+          </div>
+        </div>
+      </div>
     </template>
   </Container>
 </template>
 
 <script lang="ts">
 import { defineComponent, onBeforeUnmount } from "vue";
-import { useSubscription, useMutation } from "@/graphql";
-import { Game } from "@/types";
-import gql from "graphql-tag";
 import { useRoute, useRouter } from "vue-router";
 import Container from "@/components/Container.vue";
+import useGame from "@/hooks/useGame";
 
 export default defineComponent({
   setup() {
     const uuid = useRoute().params.uuid;
-    const router = useRouter()
-
-    const { data } = useSubscription<{ updatedGame: Game }>(
-      gql`
-        subscription GameData($uuid: String) {
-          updatedGame(uuid: $uuid) {
-            uuid
-            settings {
-              maxX
-              maxY
-              name
-              started
-            }
-            players {
-              uuid
-              id
-              name
-              resources {
-                actions
-                gold
-              }
-            }
-            grid {
-              x
-              y
-              cellType
-              defBonus
-              structure
-            }
-          }
-        }
-      `,
-      {
-        uuid,
-      }
-    );
-
-    const [joinGame] = useMutation<{ joinGame: Game }>(gql`
-      mutation JoinGame($uuid: String!) {
-        joinGame(uuid: $uuid) {
-          uuid
-        }
-      }
-    `);
-
-    const [leaveGame] = useMutation<{ leaveGame: Game }>(gql`
-      mutation LeaveGame($uuid: String!) {
-        leaveGame(uuid: $uuid) {
-          uuid
-        }
-      }
-    `);
+    const { game, joinGame, leaveGame } = useGame(uuid);
+    const router = useRouter();
 
     setTimeout(() => {
-      joinGame({ variables: { uuid } });
+      joinGame();
     }, 2000);
 
     onBeforeUnmount(() =>
-      process.env.NODE_ENV === "production"
-        ? leaveGame({ variables: { uuid } })
-        : null
+      process.env.NODE_ENV === "production" ? leaveGame() : null
     );
 
     return {
-      data,
-      leaveGame: () => leaveGame({ variables: { uuid } }).then(() => router.push({
-        name: 'Lobby'
-      })),
+      game,
+      leaveGame: () =>
+        leaveGame().then(() =>
+          router.push({
+            name: "Lobby",
+          })
+        ),
     };
   },
   components: {

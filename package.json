@@ -6,6 +6,7 @@
     "server": "docker container start postgres-dev && docker container start redis-dev && mix phx.server",
     "serve": "vue-cli-service serve",
     "dev": "start-server-and-test server http://localhost:4000/dashboard/home serve",
+    "stop": "docker container stop postgres-dev && docker container stop redis-dev",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
