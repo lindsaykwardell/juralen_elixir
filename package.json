@@ -23,6 +23,7 @@
     "core-js": "^3.6.5",
     "graphql": "^15.5.0",
     "graphql-tag": "^2.12.4",
+    "natural-order": "^1.2.2",
     "phoenix": "^1.5.9",
     "pinia": "^2.0.0-alpha.19",
     "postcss": "^7",

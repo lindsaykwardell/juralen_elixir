@@ -1,18 +1,20 @@
 import { useSubscription, useMutation } from "@/graphql";
-import { Game, Settings } from "@/types";
+import { Cell, Game, Settings } from "@/types";
 import gql from "graphql-tag";
 import { computed, ComputedRef, watch } from "@vue/runtime-core";
-import { reactive, Ref, ref } from "vue";
-import { debouncedWatch } from '@vueuse/core'
-
+import { reactive, ref } from "vue";
+import { debouncedWatch } from "@vueuse/core";
+import naturalOrder from "natural-order";
 
 export default (
   uuid: string | string[]
 ): {
   game: ComputedRef<Game | undefined>;
+  grid: ComputedRef<Cell[][] | undefined>;
   settings: Settings;
   joinGame: () => Promise<{ joinGame: Game }>;
   leaveGame: () => Promise<{ leaveGame: Game }>;
+  startGame: () => Promise<{ startGame: Game }>;
 } => {
   const { data } = useSubscription<{ updatedGame: Game }>(
     gql`
@@ -50,6 +52,20 @@ export default (
   );
 
   const game = computed(() => data.value?.updatedGame);
+  const grid = computed(() =>
+    naturalOrder(data.value?.updatedGame.grid || [])
+      .with({ blankAtTop: true })
+      .sort(["y", "x"])
+      .reduce((grid: Cell[][], cell: Cell) => {
+        if (grid[cell.y]) {
+          grid[cell.y].push(cell);
+        } else {
+          grid[cell.y] = [cell];
+        }
+
+        return grid;
+      }, [])
+  );
   const settings = reactive<Settings>({
     maxX: 8,
     maxY: 8,
@@ -84,7 +100,7 @@ export default (
     }
   `);
 
-  const [updateSettings] = useMutation(gql`
+  const [updateSettings] = useMutation<{ updateGameSettings: Game }>(gql`
     mutation UpdateSettings($uuid: String!, $settings: InputSettings!) {
       updateGameSettings(uuid: $uuid, settings: $settings) {
         uuid
@@ -97,23 +113,41 @@ export default (
     }
   `);
 
-  debouncedWatch(settings, () => {
-    if (!refreshingSettings.value && settings.maxX && settings.maxY) {
-      updateSettings({
-        variables: {
-          uuid,
-          settings: { ...settings, maxX: +settings.maxX, maxY: +settings.maxY },
-        },
-      });
+  const [startGame] = useMutation<{ startGame: Game }>(gql`
+    mutation StartGame($uuid: String!) {
+      startGame(uuid: $uuid) {
+        uuid
+      }
     }
-  }, {
-    debounce: 500
-  });
+  `);
+
+  debouncedWatch(
+    settings,
+    () => {
+      if (!refreshingSettings.value && settings.maxX && settings.maxY) {
+        updateSettings({
+          variables: {
+            uuid,
+            settings: {
+              ...settings,
+              maxX: +settings.maxX,
+              maxY: +settings.maxY,
+            },
+          },
+        });
+      }
+    },
+    {
+      debounce: 500,
+    }
+  );
 
   return {
     game,
+    grid,
     settings,
     joinGame: () => joinGame({ variables: { uuid } }),
     leaveGame: () => leaveGame({ variables: { uuid } }),
+    startGame: () => startGame({ variables: { uuid } }),
   };
 };

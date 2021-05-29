@@ -44,14 +44,6 @@ body {
     background: rgba(0, 0, 0, 0.75) none repeat scroll 0% 0%;
 }
 
-.cell {
-    min-width: 50px;
-    min-height: 50px;
-    user-select: none;
-    cursor: pointer;
-    font-size: 6px;
-}
-
 .unit {
     &:not(:last-child)::after {
         content: " ";

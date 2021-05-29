@@ -33,7 +33,7 @@ export interface Settings {
 export interface Cell {
   x: number;
   y: number;
-  cellType: string;
+  cellType: "Plains" | "Mountain" | "Forest";
   defBonus: number;
   structure: string;
 }
