@@ -43,25 +43,25 @@ defmodule Juralen.Game.Unit do
 
   def cost(unit_type) do
     case unit_type do
-      Soldier ->
+      "Soldier" ->
         1
 
-      Warrior ->
+      "Warrior" ->
         2
 
-      Archer ->
+      "Archer" ->
         2
 
-      Knight ->
+      "Knight" ->
         4
 
-      Rogue ->
+      "Rogue" ->
         4
 
-      Wizard ->
+      "Wizard" ->
         6
 
-      Priest ->
+      "Priest" ->
         6
 
       _ ->
@@ -71,25 +71,25 @@ defmodule Juralen.Game.Unit do
 
   def threat(unit_type) do
     case unit_type do
-      Soldier ->
+      "Soldier" ->
         1
 
-      Warrior ->
+      "Warrior" ->
         2
 
-      Archer ->
+      "Archer" ->
         2
 
-      Knight ->
+      "Knight" ->
         3
 
-      Rogue ->
+      "Rogue" ->
         3
 
-      Wizard ->
+      "Wizard" ->
         4
 
-      Priest ->
+      "Priest" ->
         4
 
       _ ->
@@ -99,7 +99,7 @@ defmodule Juralen.Game.Unit do
 
   def move_cost(unit_type) do
     case unit_type do
-      Wizard ->
+      "Wizard" ->
         0.25
 
       _ ->

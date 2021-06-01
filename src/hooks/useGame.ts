@@ -42,6 +42,7 @@ export default (
             cellType
             defBonus
             structure
+            controlledBy
           }
         }
       }

@@ -84,6 +84,7 @@
                 <br />
                 {{ cell.structure }}
                 <br />
+                {{ getPlayerByUuid(cell.controlledBy) }}
               </div>
             </td>
           </tr>
@@ -127,6 +128,9 @@ export default defineComponent({
       }
     };
 
+    const getPlayerByUuid = (uuid: string) =>
+      game.value?.players.find((player) => player.uuid === uuid)?.name;
+
     return {
       game,
       grid,
@@ -139,6 +143,7 @@ export default defineComponent({
         ),
       startGame,
       cellClass,
+      getPlayerByUuid,
     };
   },
   components: {

@@ -33,6 +33,7 @@ defmodule Juralen.Game do
   def start_game(uuid) do
     ActiveGames.get_game!(uuid)
     |> Init.generate_grid()
+    |> Init.generate_starting_loc()
     |> Settings.update_settings(%{started: true})
     |> ActiveGames.update_game()
   end

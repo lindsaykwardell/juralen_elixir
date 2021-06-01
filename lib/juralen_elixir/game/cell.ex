@@ -45,4 +45,36 @@ defmodule Juralen.Game.Cell do
         %{empty() | x: loc[:x], y: loc[:y]}
     end
   end
+
+  def get(cells, loc) do
+    case length(cells) do
+      0 ->
+        empty()
+
+      _ ->
+        cell = hd(cells)
+
+        if cell[:x] == loc[:x] && cell[:y] == loc[:y] do
+          cell
+        else
+          get(tl(cells), loc)
+        end
+    end
+  end
+
+  def set(cells, cell) do
+    Enum.map(cells, fn c ->
+      if cell[:x] == c[:x] && cell[:y] == c[:y] do
+        IO.puts("Match!")
+        cell
+      else
+        IO.puts("Not a match")
+        IO.puts(cell[:x])
+        IO.puts(cell[:y])
+        IO.puts(c[:x])
+        IO.puts(c[:y])
+        c
+      end
+    end)
+  end
 end

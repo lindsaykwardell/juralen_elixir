@@ -42,7 +42,7 @@ defmodule JuralenWeb.Schema.GameSchema do
 
   object :cell do
     field :cell_type, non_null(:string)
-    field :controlled_by, :integer
+    field :controlled_by, :string
     field :def_bonus, non_null(:integer)
     field :structure, :string
     field :farms, non_null(:integer)

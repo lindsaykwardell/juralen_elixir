@@ -36,4 +36,5 @@ export interface Cell {
   cellType: "Plains" | "Mountain" | "Forest";
   defBonus: number;
   structure: string;
+  controlledBy: string;
 }
