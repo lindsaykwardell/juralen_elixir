@@ -3,6 +3,7 @@ defmodule Juralen.Game.Init do
     %{
       uuid: UUID.uuid4(),
       grid: [],
+      units: [],
       players: [],
       settings: nil
     }
