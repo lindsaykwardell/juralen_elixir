@@ -1,3 +1,5 @@
+import { ComputedRef } from "vue-demi";
+
 export interface User {
   id: number;
   name: string;
@@ -43,6 +45,7 @@ export interface Cell {
 export interface Unit {
   uuid: string;
   unitType: string;
+  shortType: string;
   movesLeft: number;
   attack: number;
   health: number;

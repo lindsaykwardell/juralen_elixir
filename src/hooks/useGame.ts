@@ -1,5 +1,5 @@
 import { useSubscription, useMutation } from "@/graphql";
-import { Cell, Game, Settings } from "@/types";
+import { Cell, Game, Settings, Unit } from "@/types";
 import gql from "graphql-tag";
 import { computed, ComputedRef, watch } from "@vue/runtime-core";
 import { reactive, ref } from "vue";
@@ -11,6 +11,7 @@ export default (
 ): {
   game: ComputedRef<Game | undefined>;
   grid: ComputedRef<Cell[][] | undefined>;
+  units: ComputedRef<Unit[] | undefined>;
   settings: Settings;
   joinGame: () => Promise<{ joinGame: Game }>;
   leaveGame: () => Promise<{ leaveGame: Game }>;
@@ -77,6 +78,31 @@ export default (
 
         return grid;
       }, [])
+  );
+  const units = computed(() =>
+    data.value?.updatedGame.units.map((unit) => ({
+      ...unit,
+      shortType: (() => {
+        switch (unit.unitType) {
+          case "Soldier":
+            return "So";
+          case "Warrior":
+            return "Wa";
+          case "Archer":
+            return "Ar";
+          case "Knight":
+            return "Kn";
+          case "Rogue":
+            return "Ro";
+          case "Wizard":
+            return "Wi";
+          case "Priest":
+            return "Pr";
+          default:
+            return "??";
+        }
+      })(),
+    }))
   );
   const settings = reactive<Settings>({
     maxX: 8,
@@ -157,6 +183,7 @@ export default (
   return {
     game,
     grid,
+    units,
     settings,
     joinGame: () => joinGame({ variables: { uuid } }),
     leaveGame: () => leaveGame({ variables: { uuid } }),

@@ -84,7 +84,12 @@
                 {{ cell.structure }}
                 <br />
                 <div class="flex justify-around">
-                  <div v-for="unit in getUnitsByCell(cell.x, cell.y)" :key="unit.uuid">{{ unit.unitType }}</div>
+                  <div
+                    v-for="unit in getUnitsByCell(cell.x, cell.y)"
+                    :key="unit.uuid"
+                  >
+                    {{ unit.shortType }}
+                  </div>
                 </div>
                 <br />
                 {{ getPlayerByUuid(cell.controlledBy) }}
@@ -107,9 +112,15 @@ import { Cell, Unit } from "@/types";
 export default defineComponent({
   setup() {
     const uuid = useRoute().params.uuid;
-    const { game, grid, settings, joinGame, leaveGame, startGame } = useGame(
-      uuid
-    );
+    const {
+      game,
+      grid,
+      units,
+      settings,
+      joinGame,
+      leaveGame,
+      startGame,
+    } = useGame(uuid);
     const router = useRouter();
 
     setTimeout(() => {
@@ -134,12 +145,13 @@ export default defineComponent({
     const getPlayerByUuid = (uuid: string) =>
       game.value?.players.find((player) => player.uuid === uuid)?.name;
 
-    const getUnitsByCell = (x: number, y: number) =>
-      game.value?.units.filter((unit: Unit) => unit.x === x && unit.y === y);
+    const getUnitsByCell = (x: number, y: number): Unit[] =>
+      units.value?.filter((unit: Unit) => unit.x === x && unit.y === y) || [];
 
     return {
       game,
       grid,
+      units,
       settings,
       leaveGame: () =>
         leaveGame().then(() =>
@@ -150,7 +162,7 @@ export default defineComponent({
       startGame,
       cellClass,
       getPlayerByUuid,
-      getUnitsByCell
+      getUnitsByCell,
     };
   },
   components: {
