@@ -107,7 +107,13 @@ defmodule Juralen.Game.Unit do
     end
   end
 
-  def build(game, unit_type, loc) do
-    %{game | units: [%{generate(unit_type) | x: loc[:x], y: loc[:y]} | game[:units]]}
+  def build(game, unit_type, loc, player) do
+    %{
+      game
+      | units: [
+          %{generate(unit_type) | x: loc[:x], y: loc[:y], controlled_by: player[:uuid]}
+          | game[:units]
+        ]
+    }
   end
 end

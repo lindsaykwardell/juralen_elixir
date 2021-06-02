@@ -5,6 +5,7 @@ defmodule JuralenWeb.Schema.GameSchema do
   object :game do
     field :uuid, non_null(:string)
     field :grid, list_of(:cell)
+    field :units, list_of(:unit)
     field :players, list_of(:player)
     field :settings, non_null(:settings)
   end
@@ -49,6 +50,18 @@ defmodule JuralenWeb.Schema.GameSchema do
     field :towers, non_null(:integer)
     field :x, non_null(:integer)
     field :y, non_null(:integer)
+  end
+
+  object :unit do
+    field :uuid, non_null(:string)
+    field :unit_type, non_null(:string)
+    field :moves_left, :integer
+    field :attack, :integer
+    field :health, :integer
+    field :range, :integer
+    field :controlled_by, :string
+    field :x, :integer
+    field :y, :integer
   end
 
   object :game_queries do

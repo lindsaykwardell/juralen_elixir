@@ -81,8 +81,11 @@
               <div class="cell" :class="cellClass(cell)">
                 {{ cell.cellType }} ({{ x }}, {{ y }})
                 <br />
-                <br />
                 {{ cell.structure }}
+                <br />
+                <div class="flex justify-around">
+                  <div v-for="unit in getUnitsByCell(cell.x, cell.y)" :key="unit.uuid">{{ unit.unitType }}</div>
+                </div>
                 <br />
                 {{ getPlayerByUuid(cell.controlledBy) }}
               </div>
@@ -99,7 +102,7 @@ import { defineComponent, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Container from "@/components/Container.vue";
 import useGame from "@/hooks/useGame";
-import { Cell } from "@/types";
+import { Cell, Unit } from "@/types";
 
 export default defineComponent({
   setup() {
@@ -131,6 +134,9 @@ export default defineComponent({
     const getPlayerByUuid = (uuid: string) =>
       game.value?.players.find((player) => player.uuid === uuid)?.name;
 
+    const getUnitsByCell = (x: number, y: number) =>
+      game.value?.units.filter((unit: Unit) => unit.x === x && unit.y === y);
+
     return {
       game,
       grid,
@@ -144,6 +150,7 @@ export default defineComponent({
       startGame,
       cellClass,
       getPlayerByUuid,
+      getUnitsByCell
     };
   },
   components: {

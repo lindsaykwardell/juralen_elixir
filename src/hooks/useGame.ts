@@ -44,6 +44,17 @@ export default (
             structure
             controlledBy
           }
+          units {
+            uuid
+            unitType
+            movesLeft
+            attack
+            health
+            range
+            controlledBy
+            x
+            y
+          }
         }
       }
     `,

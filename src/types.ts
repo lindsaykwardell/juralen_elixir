@@ -9,6 +9,7 @@ export interface Game {
   players: Player[];
   settings: Settings;
   grid: Cell[];
+  units: Unit[];
 }
 
 export interface Player {
@@ -37,4 +38,16 @@ export interface Cell {
   defBonus: number;
   structure: string;
   controlledBy: string;
+}
+
+export interface Unit {
+  uuid: string;
+  unitType: string;
+  movesLeft: number;
+  attack: number;
+  health: number;
+  range: number;
+  controlledBy?: string;
+  x: number;
+  y: number;
 }
