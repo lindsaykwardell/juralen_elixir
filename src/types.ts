@@ -19,6 +19,11 @@ export interface Player {
   uuid: string;
   name: string;
   resources: Resources;
+  hasLost: boolean;
+  analyzer: unknown;
+  color: string;
+  score: number;
+  tech_tree: unknown;
 }
 
 export interface Resources {

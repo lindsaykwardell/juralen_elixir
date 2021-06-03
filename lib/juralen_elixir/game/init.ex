@@ -51,26 +51,35 @@ defmodule Juralen.Game.Init do
       _ ->
         player = hd(players)
 
-        loc = %{x: Enum.random(0..game[:settings][:max_x]), y: Enum.random(0..game[:settings][:max_y])}
+        loc = %{
+          x: Enum.random(0..game[:settings][:max_x]),
+          y: Enum.random(0..game[:settings][:max_y])
+        }
 
-        generate_starting_loc(
-          %{
-            game
-            |> Juralen.Game.Unit.build("Soldier", loc, player)
-            |> Juralen.Game.Unit.build("Soldier", loc, player)
-            |> Juralen.Game.Unit.build("Soldier", loc, player)
-            | grid:
-                Juralen.Game.Cell.set(
-                  game[:grid],
-                  %{
-                    Juralen.Game.Cell.get(game[:grid], loc)
-                    | controlled_by: player[:uuid],
-                      structure: "Citadel"
-                  }
-                )
-          },
-          tl(players)
-        )
+        cell = Juralen.Game.Cell.get(game[:grid], loc)
+
+        if cell[:cell_type] != "Plains" || cell[:controlled_by] != nil do
+          generate_starting_loc(game, players)
+        else
+          generate_starting_loc(
+            %{
+              (game
+               |> Juralen.Game.Unit.build("Soldier", loc, player)
+               |> Juralen.Game.Unit.build("Soldier", loc, player)
+               |> Juralen.Game.Unit.build("Soldier", loc, player))
+              | grid:
+                  Juralen.Game.Cell.set(
+                    game[:grid],
+                    %{
+                      cell
+                      | controlled_by: player[:uuid],
+                        structure: "Citadel"
+                    }
+                  )
+            },
+            tl(players)
+          )
+        end
     end
   end
 end

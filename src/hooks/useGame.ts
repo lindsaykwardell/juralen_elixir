@@ -1,5 +1,5 @@
 import { useSubscription, useMutation } from "@/graphql";
-import { Cell, Game, Settings, Unit } from "@/types";
+import { Cell, Game, Player, Settings, Unit } from "@/types";
 import gql from "graphql-tag";
 import { computed, ComputedRef, watch } from "@vue/runtime-core";
 import { reactive, ref } from "vue";
@@ -10,6 +10,7 @@ export default (
   uuid: string | string[]
 ): {
   game: ComputedRef<Game | undefined>;
+  players: ComputedRef<Player[] | undefined>;
   grid: ComputedRef<Cell[][] | undefined>;
   units: ComputedRef<Unit[] | undefined>;
   settings: Settings;
@@ -36,6 +37,12 @@ export default (
               actions
               gold
             }
+            hasLost
+            isHuman
+            analyzer
+            color
+            score
+            techTree
           }
           grid {
             x
@@ -65,6 +72,9 @@ export default (
   );
 
   const game = computed(() => data.value?.updatedGame);
+  const players = computed(() =>
+    [...(data.value?.updatedGame.players || [])].reverse()
+  );
   const grid = computed(() =>
     naturalOrder(data.value?.updatedGame.grid || [])
       .with({ blankAtTop: true })
@@ -182,6 +192,7 @@ export default (
 
   return {
     game,
+    players,
     grid,
     units,
     settings,

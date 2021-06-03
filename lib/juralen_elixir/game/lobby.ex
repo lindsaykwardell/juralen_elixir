@@ -3,10 +3,6 @@ defmodule Juralen.Game.Lobby do
   alias Juralen.Game.ActiveGames
 
   def join_lobby do
-    # Absinthe.Subscription.publish(JuralenWeb.Endpoint, fetch_game_queue(),
-    #   game_queue: "game_queue"
-    # )
-
     {:ok, "OK"}
   end
 

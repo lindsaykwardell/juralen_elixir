@@ -13,7 +13,7 @@
       <template v-if="!game.settings.started">
         <div class="m-6 py-4 bg-gray-900">
           <div
-            v-for="player in game.players"
+            v-for="player in players"
             :key="player.uuid"
             class="grid grid-cols-10 hover:bg-gray-800 p-2"
           >
@@ -30,6 +30,7 @@
             <div class="col-span-2">
               <label>
                 Color
+                <ColorPicker :value="player.color" />
               </label>
             </div>
             <div>
@@ -106,7 +107,9 @@
 import { defineComponent, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Container from "@/components/Container.vue";
+import ColorPicker from "@/components/game/ColorPicker.vue";
 import useGame from "@/hooks/useGame";
+import usePlayerColor from "@/hooks/usePlayerColor";
 import { Cell, Unit } from "@/types";
 
 export default defineComponent({
@@ -114,6 +117,7 @@ export default defineComponent({
     const uuid = useRoute().params.uuid;
     const {
       game,
+      players,
       grid,
       units,
       settings,
@@ -132,6 +136,14 @@ export default defineComponent({
     );
 
     const cellClass = (cell: Cell) => {
+      if (cell.controlledBy) {
+        const player = players.value?.find(
+          (player) => player.uuid === cell.controlledBy
+        );
+
+        if (player) return usePlayerColor(player.color);
+      }
+
       switch (cell.cellType) {
         case "Plains":
           return "bg-terrain-plains";
@@ -150,6 +162,7 @@ export default defineComponent({
 
     return {
       game,
+      players,
       grid,
       units,
       settings,
@@ -167,6 +180,7 @@ export default defineComponent({
   },
   components: {
     Container,
+    ColorPicker,
   },
 });
 </script>
